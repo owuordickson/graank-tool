@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/global.css">
+    <link rel="stylesheet" href="assets/css/nativize.css">
+    <link rel="stylesheet" href="assets/css/grid.css">
+    <link rel="stylesheet" href="assets/css/variables.css">
+    <link rel="stylesheet" href="assets/css/github.css">
+    <link rel="stylesheet" href="assets/css/graank.css">
+
+    <!--link rel="import" href="sections/dataset.html"-->
+    <link rel="import" href="sections/result.html">
+
+    <title>Graank</title>
+</head>
+<body>
+
+    <div class="grid-wrapper">
+        <div class="grid-header">
+          <div class="grid-title">
+            <h1><strong>Graank</strong></h1>
+            <p>a data mining tool for Gradual Patterns</p>
+          </div>
+        </div>
+
+        <!--main class="content js-content"></main-->
+        <div class="grid-content-right u-category-brown" id="main">
+          <!--main class="dataset js-dataset"></main-->
+          <div class="graank">
+            <div class="graank-wrapper">
+
+              <div class="graank-info">Open a File
+                <div class="graank-meta u-avoid-clicks">File Format: CSV </div><!--span class="graank-meta-divider">|</span> Separator: space</div-->
+              </div>
+
+              <!--div class="graank-input-group">
+                <div>
+                  <select type="button" class="graank-dropdown" id="select-pattern">
+                    <option class="dropdown-item" id="gradual">Gradual</option>
+                    <option class="dropdown-item" id="emerging">Emerging</option>
+                  </select>
+                </div>
+                <div>
+                  <input type="text" class="graank-input" id="select-directory" placeholder="click to choose a file ...">
+                </div>
+                <div>
+                  <button class="graank-button" id="execute-algorithm">Execute</button>
+                </div>
+              </div-->
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="pattern-type">
+                    Gradual Patterns
+                  </button>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" data-value="Gradual">Gradual</a>
+                    <a class="dropdown-item" data-value="Emerging">Emerging</a>
+                  </div>
+                </div>
+                <input type="text" class="form-control" id="select-directory" placeholder="click to select file ...">
+                <div class="input-group-append">
+                  <button class="btn btn-secondary" type="button" id="upload-file">Upload</button>
+                </div>
+              </div>
+
+              <div class="graank-progress u-category-maroon">
+                  <progress class="graank-progressbar" id="show-progress" min="0" max="100" value="10"></progress>
+                  <span class="graank-response" id="show-message"></span>
+              </div>
+
+              <div class="graank-specs u-category-subtle">
+                <div class="grid-specs-gradual-group">
+                  <div class="grid-title-sup"><span class="graank-span-title" data-tooltip="range: 0.0 to 1.0" data-tooltip-position="top">Support</span></div>
+                  <div class="grid-input-sup"><input class="graank-input-specs" value=".5" id="input-sup"></div>
+                  <div class="grid-button-exec-sup"><button type="button" class="btn btn-outline-secondary graank-btn-exec" id="run-algorithm-sup">
+                    Get Patterns</button></div>
+                </div>
+
+                <div class="grid-specs-temporal-group">
+                  <div class="grid-title-sup"><span class="graank-span-title" data-tooltip="range: 0.0 to 1.0" data-tooltip-position="top">Support</span></div>
+                  <div class="grid-title-rep"><span class="graank-span-title" data-tooltip="range: 0.0 to 1.0" data-tooltip-position="top">Representativity</span></div>
+                  <div class="grid-title-ref"><span class="graank-span-title" data-tooltip="range: 0 to last-column" data-tooltip-position="top">Reference Column</span></div>
+                  <div class="grid-input-sup"><input class="graank-input-specs" value=".5" id="input-sup"></div>
+                  <div class="grid-input-rep"><input class="graank-input-specs" value=".8" id="input-rep"></div>
+                  <div class="grid-input-ref"><input class="graank-input-specs" value="0" id="input-ref"></div>
+                  <div class="grid-button-exec"><button type="button" class="btn btn-outline-secondary graank-btn-exec" id="run-algorithm">
+                    Get Patterns</button></div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-content-left" id="results">
+          <main class="content js-content"></main>
+        </div>
+
+        <div class="grid-footer">
+          <div><p class="grid-footer-title">2019 © Sharemiale</p></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+      require('jquery')
+      require('popper.js')
+      require('bootstrap')
+      require('./assets/js/grid')
+      require('./assets/js/imports')
+      require('./renderer-process/index')
+    </script>
+
+</body>
+</html>
