@@ -1,0 +1,340 @@
+/* graank */
+
+.graank:first-of-type {
+  margin-top: 2rem;
+}
+.graank:last-of-type {
+  margin-bottom: 2rem;
+}
+
+.graank-wrapper {
+  position: relative;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* Toggle Button ----------------------------- */
+
+.graank-info {
+  position: relative;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: .5em 1.5em;
+  line-height: 1.5;
+  font: inherit;
+  font-weight: 600;
+  font-size: 1.2em;
+  text-align: center;
+  border: none;
+  color: inherit;
+  background-color: transparent;
+  transition: border-color .12s;
+  outline: none;
+}
+
+/*.graank-toggle-button:before,
+.graank-toggle-button:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 2px;
+  height: 50%;
+  background-color: hsl(0,0%,88%);
+  transition: transform .2s cubic-bezier(.4,.1,0,1);
+}
+.graank-toggle-button:before {
+  top: 0;
+  transform-origin: bottom center;
+  transform: translateX(.7em) rotate(-30deg) scale(.75);
+}
+.graank-toggle-button:after {
+  bottom: 0;
+  transform-origin: top center;
+  transform: translateX(.7em) rotate(30deg) scale(.75);
+}
+.is-open .graank-toggle-button:before,
+.is-open .graank-toggle-button:after {
+  transform: rotate(0deg);
+}
+.graank-toggle-button:focus:before,
+.graank-toggle-button:focus:after {
+  background-color: currentColor;
+}*/
+
+/* Meta info */
+
+.graank-meta {
+  margin-top: .2em;
+  font-size: 11px;
+  font-weight: 300;
+  text-transform: uppercase;
+  color: var(--color-subtle);
+}
+.graank-meta-divider {
+  margin: 0 .5em;
+}
+
+
+/* graank Box ----------------------------- */
+
+/*.graank-box {
+  display: none;
+  position: relative;
+  padding: 2em;
+  margin-top: 1em;
+  margin-bottom: 2em;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
+}
+.graank-box:before {
+  content: "";
+  position: absolute;
+  top: -11px;
+  width: 20px;
+  height: 20px;
+  background-color: inherit;
+  border-top: inherit;
+  border-right: inherit;
+  border-top-right-radius: 3px;
+  transform: rotate(-45deg);
+}
+
+.is-open .graank-box {
+  display: block;
+  animation: graank-box-fade-in .2s cubic-bezier(0, .20, .20, .96);
+}
+@keyframes graank-box-fade-in {
+    0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.graank-box > p:first-child {
+  margin-top: 0;
+}
+
+.graank-box h5 {
+  font-size: 1em;
+  margin-bottom: .6em;
+}
+
+*/
+/* graank Controls ----------------------------- */
+
+.input-group {
+  min-width: 80%;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.graank-button, .btn-secondary {
+  height: 50px;
+  border: 2px solid var(--color-accent);
+  font: inherit;
+  font-size: 1.2em;
+  color: white;
+  background-color: var(--color-accent);
+}
+/*.graank-button:hover, .btn-outline-secondary:hover {
+  color: white;
+  background-color: var(--color-accent);
+  border: 0;
+}
+.graank-button:active, .btn-outline-secondary:active{
+  border-color: var(--color-accent);
+  border: 0;
+}*/
+
+.graank-input, .form-control {
+  height: 50px;
+  border: 2px solid var(--color-border);
+  font: inherit;
+  font-size: 0.9em;
+  color: var(--color-accent);
+  background-color: transparent;
+}
+.graank-input:focus, .form-control:focus {
+  outline: none;
+  color: var(--color-accent);
+  border-color: hsl(0,0%,80%);
+  background-color: white;
+}
+.form-control::placeholder {
+  color: var(--color-accent)
+}
+
+.graank-dropdown, .dropdown-toggle {
+  height: 50px;
+  border: 2px solid var(--color-accent);
+  font: inherit;
+  font-size: 1.2em;
+  color: white;
+  background-color: var(--color-accent);
+}
+/*.graank-dropdown:hover, .dropdown-toggle:hover {
+  color: white;
+  background-color: var(--color-accent);
+  border: 0;
+}
+.graank-dropdown:active, .dropdown-toggle:active {
+  border-color: var(--color-accent);
+}
+.graank-dropdown, .dropdown-item a {
+  color: inherit;
+}*/
+
+/* Progress Bar ----------------------------- */
+
+
+.graank-progress {
+  min-width: 80%;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 10px;
+  visibility: hidden;
+  opacity: 0;
+}
+.graank-progress.is-shown {
+  visibility: visible;
+  opacity: 1;
+}
+
+.graank-progressbar {
+  height: 1px;
+  width: 100%;
+}
+
+.graank-response {
+  word-break:
+  break-word;
+  text-align: center;
+  color: var(--color-accent);
+}
+
+/* User Specifications ----------------------------- */
+
+.graank-specs {
+  min-width: 80%;
+  margin: 0;
+  padding: 10px;
+}
+
+.grid-specs-gradual-group {
+  width: 100%;
+  grid-template-columns: auto auto auto auto;
+  grid-template-rows: auto auto;
+  display: inline-grid;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  visibility: hidden;
+  opacity: 0;
+}
+.grid-specs-gradual-group.is-shown {
+  visibility: visible;
+  opacity: 1;
+}
+
+.grid-specs-temporal-group {
+  width: 100%;
+  grid-template-columns: auto auto auto auto;
+  grid-template-rows: auto auto;
+  display: inline-grid;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  visibility: hidden;
+  opacity: 0;
+}
+.grid-specs-temporal-group.is-shown {
+  visibility: visible;
+  opacity: 1;
+}
+
+.grid-title-sup {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.grid-title-rep {
+  grid-column: 2;
+  grid-row: 1;
+
+}
+
+.grid-title-ref {
+  grid-column: 3;
+  grid-row: 1;
+
+}
+
+.grid-input-sup {
+  grid-column: 1;
+  grid-row: 2;
+
+}
+
+.grid-input-rep {
+  grid-column: 2;
+  grid-row: 2;
+
+}
+
+.grid-input-ref {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.grid-button-exec {
+  grid-column: 4;
+  grid-row: 2;
+  padding-left: 5px;
+  margin: 0;
+}
+
+.grid-button-exec-sup {
+  grid-column: 2;
+  grid-row: 2;
+  padding-left: 5px;
+}
+
+.graank-span-title {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: var(--color-accent);
+}
+
+.graank-input-specs {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  color: var(--color-accent);
+}
+
+.graank-btn-exec {
+  width: 100%;
+  height: 100%;
+}
+
+/* Transitions ----------------------------- */
+/*
+.smooth-appear {
+  opacity: 1;
+  transition: opacity .5s ease-in-out;
+}
+
+.disappear {
+  opacity: 0;
+}
+.graank-button.smooth-disappear:focus {
+  outline: inherit;
+  border-color: inherit;
+  background-color: inherit;
+}*/
