@@ -92,7 +92,7 @@ class DataTransform:
                     i += 1
 
                 ref_name = str(title_row[ref_column])
-                title_row[ref_column] = ref_name + "**"
+                title_row[ref_column] = "<strong>" +ref_name + "**</strong>"
                 new_dataset = [title_row]
 
                 # 3. Split the original dataset into gradual items

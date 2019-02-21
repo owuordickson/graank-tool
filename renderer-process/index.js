@@ -3,12 +3,11 @@ const tooltip = require('electron-tooltip')
 let spawn = require('child_process').spawn
 //let pyshell = require('python-shell')
 
-let csvFile = ""
-
 const selectPattern = document.querySelector('.dropdown-menu')
 const selectDirBtn = document.getElementById('select-directory')
 const uploadFile = document.getElementById('upload-file')
 const runPattern = document.getElementById('run-algorithm')
+const runPattern1 = document.getElementById('run-algorithm1')
 
 tooltip({
     //
@@ -30,24 +29,31 @@ selectDirBtn.addEventListener('click', (event) => {
 })
 
 uploadFile.addEventListener('click', (event) => {
+  csvFile = selectDirBtn.value
   showProgress()
   closeResultContent()
-  showSpecifications()
+  showSpecifications(csvFile)
 })
 
 runPattern.addEventListener('click', (event) => {
+  type = 1
+  file = selectDirBtn.value
+  ref_col = document.getElementById('input-ref').value
+  min_sup = document.getElementById('input-sup').value
+  min_rep = document.getElementById('input-rep').value
+  runPythonCode(type, file, (ref_col-1), min_sup, min_rep)
+})
+
+runPattern1.addEventListener('click', (event) => {
   //showResultContent()
   type = 1
-  file = csvFile
-  ref_col = 0
-  min_sup = 0.2
-  min_rep = 0.5
-  runPythonCode(type, file, ref_col, min_sup, min_rep)
+  file = selectDirBtn.value
+  min_sup = document.getElementById('input-sup1').value
+  //runPythonCode(type, file, min_sup)
 })
 
 ipcRenderer.on('selected-directory', (event, path) => {
-  document.getElementById('select-directory').value = `${path}`
-  csvFile = path
+  selectDirBtn.value = `${path}`
   closeResultContent()
   closeProgress()
   closeSpecifications()
@@ -74,12 +80,11 @@ function showProgress(){
   }
 }
 
-function showSpecifications(){
+function showSpecifications(file){
 
   specsGradual = document.querySelector('.grid-specs-gradual-group.is-shown')
   specsTemporal = document.querySelector('.grid-specs-temporal-group.is-shown')
 
-  file = csvFile
   timeExists = checkColumn(file)
   if (timeExists){
     if(!specsTemporal){
