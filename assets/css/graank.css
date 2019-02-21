@@ -1,5 +1,15 @@
 /* graank */
 
+@keyframes appear {
+  0% {transform: scale(0);}
+  100% {transform: scale(1);}
+}
+
+@keyframes disappear {
+  0% {transform: scale(1);}
+  100% {transform: scale(0);}
+}
+
 .graank:first-of-type {
   margin-top: 2rem;
 }
@@ -199,10 +209,12 @@
   padding: 10px;
   visibility: hidden;
   opacity: 0;
+  animation: disappear 0.8s;
 }
 .graank-progress.is-shown {
   visibility: visible;
   opacity: 1;
+  animation: appear 0.8s;
 }
 
 .graank-progressbar {
@@ -235,10 +247,12 @@
   padding: 0;
   visibility: hidden;
   opacity: 0;
+  animation: disappear 0.8s;
 }
 .grid-specs-gradual-group.is-shown {
   visibility: visible;
   opacity: 1;
+  animation: appear 0.8s;
 }
 
 .grid-specs-temporal-group {
@@ -251,10 +265,12 @@
   padding: 0;
   visibility: hidden;
   opacity: 0;
+  animation: disappear 0.8s;
 }
 .grid-specs-temporal-group.is-shown {
   visibility: visible;
   opacity: 1;
+  animation: appear 0.8s;
 }
 
 .grid-title-sup {

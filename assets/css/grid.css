@@ -95,8 +95,8 @@
   grid-column: 2;
   grid-row: 2;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  /*justify-content: center;
+  align-items: center;*/
   margin-top: 2%;
   margin-bottom: 2%;
   padding: 1rem;

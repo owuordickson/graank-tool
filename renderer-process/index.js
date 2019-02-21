@@ -1,5 +1,9 @@
 const {ipcRenderer} = require('electron')
 const tooltip = require('electron-tooltip')
+let spawn = require('child_process').spawn
+//let pyshell = require('python-shell')
+
+let csvFile = ""
 
 const selectPattern = document.querySelector('.dropdown-menu')
 const selectDirBtn = document.getElementById('select-directory')
@@ -27,21 +31,27 @@ selectDirBtn.addEventListener('click', (event) => {
 
 uploadFile.addEventListener('click', (event) => {
   showProgress()
-  showSpecifications()
   closeResultContent()
+  showSpecifications()
 })
 
 runPattern.addEventListener('click', (event) => {
-  showResultContent()
+  //showResultContent()
+  type = 1
+  file = csvFile
+  ref_col = 0
+  min_sup = 0.5
+  min_rep = 0.5
+  runPythonCode(type, file, ref_col, min_sup, min_rep)
 })
 
 ipcRenderer.on('selected-directory', (event, path) => {
   document.getElementById('select-directory').value = `${path}`
+  csvFile = path
   closeResultContent()
   closeProgress()
   closeSpecifications()
 })
-
 
 // --------------------- Functions ----------------------------------
 
@@ -69,8 +79,8 @@ function showSpecifications(){
   specsGradual = document.querySelector('.grid-specs-gradual-group.is-shown')
   specsTemporal = document.querySelector('.grid-specs-temporal-group.is-shown')
 
-  csvFile = ""
-  timeExists = checkColumn(csvFile)
+  file = csvFile
+  timeExists = checkColumn(file)
   if (timeExists){
     if(!specsTemporal){
       specsTemporal = document.querySelector('.grid-specs-temporal-group')
@@ -94,6 +104,7 @@ function closeResultContent(){
   resultView = document.querySelector('.grid-content-left.is-shown')
   if (resultView){
     resultView.classList.remove('is-shown')
+
     mainView = document.querySelector('.grid-content-right.adjust')
     if(mainView){
       mainView.classList.remove('adjust')
@@ -123,6 +134,35 @@ function closeSpecifications(){
 
   }
 
-function  checkColumn(csvFile){
+function  checkColumn(file){
     return true
   }
+
+function runPythonCode(type, file, ref_col, min_sup, min_rep){
+  let pythonProcess = spawn('python',["./assets/python/border_tgraank.py", type, file, ref_col, min_sup, min_rep])
+
+  pythonProcess.stdout.on('data', (data) => {
+      // Do something with the data returned from python script
+
+      document.getElementById('text-result').innerHTML = `${data}`
+      showResultContent()
+  })
+
+  /*let options = {
+    mode: 'text',
+    pythonOptions: ['-u'],
+    scriptPath: './assets/python/',
+    args: [type, file, ref_col, min_sup, min_rep]
+  }
+
+  pyshell.run('test.py', options, function (err, results) {
+    if (err)
+      throw err;
+    // Results is an array consisting of messages collected during execution
+    //console.log('results: %j', results);
+    data = "trying to get results ..."
+    document.getElementById('text-result').innerHTML = `${data}`
+    showResultContent()
+  })*/
+
+}
