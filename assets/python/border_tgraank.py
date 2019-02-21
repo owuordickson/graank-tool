@@ -809,15 +809,15 @@ def algorithm_init(filename, ref_item, minsup, minrep):
 
                 pattern_found = check_for_pattern(ref_item, gp_list)
                 if pattern_found:
-                    if s >= 1:
+                    if s > 0:
                         print("<br>")
                     rep = rep_info['Representativity']
                     rep_str = "%.2f" % rep
-                    rep_info['Representativity'] = rep_str
-                    print("<h6>"+str(rep_info)+"</h6>")
+                    #rep_info['Representativity'] = rep_str
+                    print("<h5>Representativity: "+str(rep_str)+"</h5>")
                     for line in title:
                         print(str(line)+"<br>")
-                    print('<h6>Pattern : Support</h6>')
+                    print('<h5>Pattern : Support | Time-lag : Support</h5>')
                     for i in range(len(gp_list)):
                         # D is the Gradual Patterns, S is the support for D and T is time lag
                         if (str(ref_item+1)+'+' in gp_list[i]) or (str(ref_item+1)+'-' in gp_list[i]):
