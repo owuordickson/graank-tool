@@ -34,7 +34,7 @@ class DataTransform:
         cols, data = DataTransform.test_dataset(filename)
 
         if cols:
-            print("Dataset Ok")
+            #print("Dataset Ok")
             self.time_ok = True
             self.time_cols = cols
             self.ref_item = ref_item
@@ -127,8 +127,7 @@ class DataTransform:
         # 3. Calculate representativity
         if incl_rows > 0:
             rep = (incl_rows / float(all_rows))
-            info = {"Transformation": "n+"+str(step), "Representativity": rep, "Included Rows": incl_rows,
-                    "Total Rows": all_rows}
+            info = {"Transformation": "n+"+str(step), "Representativity": rep}
             return True, info
         else:
             return False, "Representativity is 0%"
@@ -683,8 +682,6 @@ def graank(D_in, a, t_diffs, eq=False):
         temp = float(np.sum(i[1])) / float(n * (n - 1.0) / 2.0)
         if temp < a:
             G.remove(i)
-    #        else:
-    #            res.append(i[0])
     while G != []:
         G = apriori_gen(G, a, n)
         i = 0
@@ -700,7 +697,6 @@ def graank(D_in, a, t_diffs, eq=False):
                         del res2[z]
                     else:
                         z = z + 1
-
                 # return fetch indices (array) of G[1] where True
                 t_lag = calculate_time_lag(get_pattern_indices(G[i][1]), t_diffs, a)
                 if t_lag != False:
@@ -708,27 +704,6 @@ def graank(D_in, a, t_diffs, eq=False):
                     res2.append(temp)
                     res3.append(t_lag)
                 i += 1
-                # res=SetMax(res)
-    #                j=0
-    #                k=0
-    #                test=0
-    #        while j<len(res)-1:
-    #                test=0
-    #                k=j+1
-    #                while k<len(res):
-    #                    if res[j].issuperset(res[k]) or res[j]==res[k]:
-    #                        del res[k]
-    #                        del res2[k]
-    #                    else:
-    #                        if res[j].issubset(res[k]):
-    #                            del res[j]
-    #                            del res2[j]
-    #                            test=1
-    #                            break
-    #                    k+=1
-    #                if test==1:
-    #                    continue
-    #                j+=1
     return title, res, res2, res3
 
 
@@ -780,8 +755,10 @@ def get_support(T, s, eq=False):
 def calculate_time_lag(indices, time_diffs, minsup):
     time_lags = get_time_lag(indices, time_diffs)
     time_lag, sup = init_fuzzy_support(time_lags, time_diffs, minsup)
+    p_value_str = "%.2f" % float(time_lag[1])
+    supp_str = "%.2f" % float(sup)
     if sup >= minsup:
-        msg = ("~ " + time_lag[0] + str(time_lag[1]) + " " + str(time_lag[2]) + " : " + str(sup))
+        msg = ("~ " + time_lag[0] + p_value_str + " " + str(time_lag[2]) + " : " + supp_str)
         return msg
     else:
         return False
@@ -832,21 +809,26 @@ def algorithm_init(filename, ref_item, minsup, minrep):
 
                 pattern_found = check_for_pattern(ref_item, gp_list)
                 if pattern_found:
-                    print(rep_info)
+                    if s >= 1:
+                        print("<br>")
+                    rep = rep_info['Representativity']
+                    rep_str = "%.2f" % rep
+                    rep_info['Representativity'] = rep_str
+                    print("<h6>"+str(rep_info)+"</h6>")
                     for line in title:
-                        print(line)
-                    print('Pattern : Support')
+                        print(str(line)+"<br>")
+                    print('<h6>Pattern : Support</h6>')
                     for i in range(len(gp_list)):
                         # D is the Gradual Patterns, S is the support for D and T is time lag
                         if (str(ref_item+1)+'+' in gp_list[i]) or (str(ref_item+1)+'-' in gp_list[i]):
                             # select only relevant patterns w.r.t *reference item
-                            print(str(tuple(gp_list[i])) + ' : ' + str(sup_list[i]) + ' | ' + str(tlag_list[i]))
+                            supp_str = "%.2f" % float(sup_list[i])
+                            print(str(tuple(gp_list[i])) + ' : ' + supp_str + ' | ' + str(tlag_list[i]) + "<br>")
                             patterns = patterns + 1
-                    print("---------------------------------------------------------")
-
+                    #print("---------------------------")
         if patterns == 0:
-            print("Oops! no relevant pattern was found")
-            print("---------------------------------------------------------")
+            print("<h5>Oops! no relevant pattern was found</h5>")
+            #print("-------------------------------")
         sys.stdout.flush()
     except Exception as error:
         print(error)

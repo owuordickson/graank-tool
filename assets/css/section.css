@@ -27,7 +27,6 @@
 .section-body {
   position: relative;
   max-width: 100%;
-  min-height: 70%;
   margin: 1rem;
   padding: 1rem;
 }
@@ -37,8 +36,9 @@
   max-width: 100%;
   margin-left: 1rem;
   margin-right: 1rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding: 2rem;
+  padding-top: 1rem;
+  padding-bottom: 0;
   border-bottom: 1px solid var(--color-border);
 }
 /*@media (min-width: 940px) {

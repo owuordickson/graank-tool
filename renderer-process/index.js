@@ -40,7 +40,7 @@ runPattern.addEventListener('click', (event) => {
   type = 1
   file = csvFile
   ref_col = 0
-  min_sup = 0.5
+  min_sup = 0.2
   min_rep = 0.5
   runPythonCode(type, file, ref_col, min_sup, min_rep)
 })
