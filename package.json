@@ -59,6 +59,8 @@
     "glob": "^7.1.0",
     "highlight.js": "^9.3.0",
     "jquery": "^3.3.1",
+    "mime": "^2.4.0",
+    "mmmagic": "^0.5.2",
     "popper.js": "^1.14.4",
     "python-shell": "^1.0.7",
     "update-electron-app": "^1.1.1"

@@ -1,13 +1,16 @@
 const {ipcRenderer} = require('electron')
 const tooltip = require('electron-tooltip')
+const mime = require('mime')
 let spawn = require('child_process').spawn
-//let pyshell = require('python-shell')
 
 const selectPattern = document.querySelector('.dropdown-menu')
 const selectDirBtn = document.getElementById('select-directory')
 const uploadFile = document.getElementById('upload-file')
 const runPattern = document.getElementById('run-algorithm')
 const runPattern1 = document.getElementById('run-algorithm1')
+
+const msgLabel = document.getElementById('show-message')
+const progressBar = document.getElementById('show-progress')
 
 tooltip({
     //
@@ -85,22 +88,25 @@ function showSpecifications(file){
   specsGradual = document.querySelector('.grid-specs-gradual-group.is-shown')
   specsTemporal = document.querySelector('.grid-specs-temporal-group.is-shown')
 
-  timeExists = checkColumn(file)
-  if (timeExists){
-    if(!specsTemporal){
-      specsTemporal = document.querySelector('.grid-specs-temporal-group')
-      specsTemporal.classList.add('is-shown')
-    }
-    if(specsGradual){
-      specsGradual.classList.remove('is-shown')
-    }
-  }else{
-    if(!specsGradual){
-      specsGradual = document.querySelector('.grid-specs-gradual-group')
-      specsGradual.classList.add('is-shown')
-    }
-    if(specsGradual){
-      specsTemporal.classList.remove('is-shown')
+  isCSV = checkFile(file)
+  if (isCSV){
+    timeExists = validateTimeColumn(file)
+    if (timeExists){
+      if(!specsTemporal){
+        specsTemporal = document.querySelector('.grid-specs-temporal-group')
+        specsTemporal.classList.add('is-shown')
+      }
+      if(specsGradual){
+        specsGradual.classList.remove('is-shown')
+      }
+    }else{
+      if(!specsGradual){
+        specsGradual = document.querySelector('.grid-specs-gradual-group')
+        specsGradual.classList.add('is-shown')
+      }
+      if(specsGradual){
+        specsTemporal.classList.remove('is-shown')
+      }
     }
   }
 }
@@ -139,7 +145,20 @@ function closeSpecifications(){
 
   }
 
-function  checkColumn(file){
+function  checkFile(file){
+    ext = mime.getType(file)
+    if (ext === 'text/csv' || ext === 'application/csv'){
+      msgLabel.innerHTML = ''
+      progressBar.value = 20
+      return true
+    }else{
+      msgLabel.innerHTML = 'file is NOT csv!'
+      return false
+    }
+  }
+
+  function validateTimeColumn(csvFile){
+    progressBar.value = 40
     return true
   }
 

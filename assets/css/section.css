@@ -19,9 +19,9 @@
   transition: visibility 0s 0s linear , opacity .36s ease-out, transform .36s ease-out;
 }*/
 
-.section h3,
+.section h1,
 .section p {
-  color: var(--color);
+  color: var(--color-accent);
 }
 
 .section-body {
@@ -29,6 +29,7 @@
   max-width: 100%;
   margin: 1rem;
   padding: 1rem;
+  color: var(--color-subtle);
 }
 
 .section-header {
