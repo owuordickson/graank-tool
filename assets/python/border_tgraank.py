@@ -788,7 +788,7 @@ def get_time_lag(indices, time_diffs):
         raise Exception("Error: No pattern found for fetching time-lags")
 
 
-def algorithm_init(filename, ref_item, minsup, minrep):
+def algorithm_fuzzy(filename, ref_item, minsup, minrep):
     try:
         # 1. Load dataset into program
         dataset = DataTransform(filename, ref_item, minrep)
@@ -869,7 +869,7 @@ def get_maximal_items(init_list, tlag_list):
 # --------------------- EXECUTE BORDER T-GRAANK ----------------------------------------------
 
 
-def algorithm_ep_init(filename, ref_item, minsup, minrep):
+def algorithm_ep_fuzzy(filename, ref_item, minsup, minrep):
     try:
         fgp_list = list()  # fuzzy-temporal gradual patterns
 
@@ -936,16 +936,42 @@ def algorithm_ep_init(filename, ref_item, minsup, minrep):
 # ------------------------- main method ----------------------------------------------------
 
 
-pattern_type = int(sys.argv[1])
-file_name = str(sys.argv[2])
-ref_col = int(sys.argv[3])
-min_sup = float(sys.argv[4])
-min_rep = float(sys.argv[5])
+request = int(sys.argv[1])
 
 #import timeit
-if pattern_type == 1:
-    algorithm_init(file_name, ref_col, min_sup, min_rep)
-    #print("I love you")
-    #sys.stdout.flush()
+if request == 1:
+    # gradual patterns
+    file_name = str(sys.argv[2])
+    min_sup = float(sys.argv[3])
+    algorithm_gradual(file_name, min_sup)
+elif request == 2:
+    # fuzzy-temporal patterns
+    file_name = str(sys.argv[2])
+    ref_col = int(sys.argv[3])
+    min_sup = float(sys.argv[4])
+    min_rep = float(sys.argv[5])
+    algorithm_fuzzy(file_name, ref_col, min_sup, min_rep)
+elif request == 11:
+    # emerging gradual Patterns
+    file_name = str(sys.argv[2])
+    min_sup = float(sys.argv[3])
+    algorithm_ep_gradual(file_name, min_sup)
+elif request == 12:
+    # emerging fuzzy-temporal Patterns
+    file_name = str(sys.argv[2])
+    ref_col = int(sys.argv[3])
+    min_sup = float(sys.argv[4])
+    min_rep = float(sys.argv[5])
+    algorithm_ep_fuzzy(file_name, ref_col, min_sup, min_rep)
+elif request == 21:
+    # check data-set for time
+    file_name = str(sys.argv[2])
+    cols, data = DataTransform.test_dataset(file_name)
+    if cols:
+        print("timeOK")
+    else:
+        print("null")
+    sys.stdout.flush()
 else:
-    algorithm_ep_init(file_name, ref_col, min_sup, min_rep)
+    print("Request not found!")
+    sys.stdout.flush()
