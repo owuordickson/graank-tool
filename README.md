@@ -1,2 +1,2 @@
 # graank-ui
-The GRAANK algorithm user interface (Electron-js) 
+An electron-js user interface for: GRAANK, T-GRAANK, BorderT-GRAANK algorithms
