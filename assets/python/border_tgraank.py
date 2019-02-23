@@ -23,6 +23,8 @@ import skfuzzy as fuzzy
 import csv
 from dateutil.parser import parse
 import time
+import itertools as it
+from collections import Iterable
 
 
 # --------------------------- Data Transform -----------------------
@@ -171,7 +173,7 @@ class DataTransform:
         # NB: test the dataset attributes: time|item_1|item_2|...|item_n
         # return true and (list) dataset if it is ok
         # 1. retrieve dataset from file
-        with open(filename, 'r') as f:
+        with open(filename, 'rU') as f:
             dialect = csv.Sniffer().sniff(f.read(1024), delimiters=";,' '\t")
             f.seek(0)
             reader = csv.reader(f, dialect)
@@ -788,6 +790,39 @@ def get_time_lag(indices, time_diffs):
         raise Exception("Error: No pattern found for fetching time-lags")
 
 
+def check_for_pattern(ref_item, R):
+    pr = 0
+    for i in range(len(R)):
+        # D is the Gradual Patterns, S is the support for D and T is time lag
+        if (str(ref_item + 1) + '+' in R[i]) or (str(ref_item + 1) + '-' in R[i]):
+            # select only relevant patterns w.r.t *reference item
+            pr = pr + 1
+    if pr > 0:
+        return True
+    else:
+        return False
+
+# --------------------- CODE FOR EMERGING PATTERNS -------------------------------------------
+
+
+def get_maximal_items(init_list, tlag_list):
+    comb = list((zip(init_list, tlag_list)))
+    max_items = gen_set(tuple(init_list))
+
+    for item_i in max_items:
+        for item_j in max_items:
+            if set(item_i).issubset(set(item_j)) and set(item_i) != (set(item_j)):
+                try:
+                    # temp.remove(item_i)
+                    for item in comb:
+                        if tuple(item[0]) == item_i:
+                            comb.remove(item)
+                except:
+                    continue
+    return comb
+
+# --------------------- EXECUTE T-GRAANK and BORDER T-GRAANK ----------------------------------------------
+
 def algorithm_fuzzy(filename, ref_item, minsup, minrep):
     try:
         # 1. Load dataset into program
@@ -835,40 +870,6 @@ def algorithm_fuzzy(filename, ref_item, minsup, minrep):
         sys.stdout.flush()
 
 
-def check_for_pattern(ref_item, R):
-    pr = 0
-    for i in range(len(R)):
-        # D is the Gradual Patterns, S is the support for D and T is time lag
-        if (str(ref_item + 1) + '+' in R[i]) or (str(ref_item + 1) + '-' in R[i]):
-            # select only relevant patterns w.r.t *reference item
-            pr = pr + 1
-    if pr > 0:
-        return True
-    else:
-        return False
-
-# --------------------- CODE FOR EMERGING PATTERNS -------------------------------------------
-
-
-def get_maximal_items(init_list, tlag_list):
-    comb = list((zip(init_list, tlag_list)))
-    max_items = gen_set(tuple(init_list))
-
-    for item_i in max_items:
-        for item_j in max_items:
-            if set(item_i).issubset(set(item_j)) and set(item_i) != (set(item_j)):
-                try:
-                    # temp.remove(item_i)
-                    for item in comb:
-                        if tuple(item[0]) == item_i:
-                            comb.remove(item)
-                except:
-                    continue
-    return comb
-
-# --------------------- EXECUTE BORDER T-GRAANK ----------------------------------------------
-
-
 def algorithm_ep_fuzzy(filename, ref_item, minsup, minrep):
     try:
         fgp_list = list()  # fuzzy-temporal gradual patterns
@@ -894,20 +895,18 @@ def algorithm_ep_fuzzy(filename, ref_item, minsup, minrep):
                     maximal_items = get_maximal_items(gp_list, tlag_list)
                     fgp_list.append(tuple((title, maximal_items)))
         if not fgp_list:
-            print("Oops! no frequent patterns were found")
-            print("----------------------------------------------------------------")
+            print("<h5>Oops! no frequent patterns were found</h5>")
+            #print("----------------------------------------------------------------")
         else:
-            print("Total Data Transformations: " + str(dataset.max_step) + " | " + "Minimum Support: " + str(min_sup))
-            print("----------------------------------------------------------------")
+            print("<h5>No. of Transformations: " + str(dataset.max_step) + "</h5>")
+            #print("----------------------------------------------------------------")
             for line in title:
-                print(line)
-            print('Emerging Pattern | Time Lags: (Transformation n, Transformation m)')
-
+                print(str(line) + "<br>")
+            print("<h5>Patterns | Time Lags: (Trans. n, Trans. m)</h5>")
             all_fgps = list()
             for item_list in fgp_list:
                 for item in item_list[1]:
                     all_fgps.append(item)
-
             patterns = 0
             ep_list = list()
             for i in range(len(all_fgps)):
@@ -921,14 +920,13 @@ def algorithm_ep_fuzzy(filename, ref_item, minsup, minrep):
                             patterns = patterns + 1
                             temp = tuple((ep, tlags))
                             ep_list.append(temp)
-                            print(str(temp[0]) + " : " + str(temp[1]))
-
-            print("\nTotal: " + str(patterns) + " FtGEPs found!")
-            print("---------------------------------------------------------")
+                            print(str(temp[0]) + " | " + str(temp[1]) + "<br>")
+            #print("\nTotal: " + str(patterns) + " FtGEPs found!")
+            #print("---------------------------------------------------------")
             if patterns == 0:
-                print("Oops! no relevant emerging pattern was found")
-                print("---------------------------------------------------------")
-            sys.stdout.flush()
+                print("<h5>Oops! no relevant emerging pattern was found</h5>")
+                #print("---------------------------------------------------------")
+        sys.stdout.flush()
     except Exception as error:
         print(error)
         sys.stdout.flush()
@@ -937,25 +935,23 @@ def algorithm_ep_fuzzy(filename, ref_item, minsup, minrep):
 
 
 request = int(sys.argv[1])
-
-#import timeit
-if request == 1:
+#if request == 1:
     # gradual patterns
-    file_name = str(sys.argv[2])
-    min_sup = float(sys.argv[3])
-    algorithm_gradual(file_name, min_sup)
-elif request == 2:
+#    file_name = str(sys.argv[2])
+#    min_sup = float(sys.argv[3])
+#    algorithm_gradual(file_name, min_sup)
+if request == 2:
     # fuzzy-temporal patterns
     file_name = str(sys.argv[2])
     ref_col = int(sys.argv[3])
     min_sup = float(sys.argv[4])
     min_rep = float(sys.argv[5])
     algorithm_fuzzy(file_name, ref_col, min_sup, min_rep)
-elif request == 11:
+#elif request == 11:
     # emerging gradual Patterns
-    file_name = str(sys.argv[2])
-    min_sup = float(sys.argv[3])
-    algorithm_ep_gradual(file_name, min_sup)
+#    file_name = str(sys.argv[2])
+#    min_sup = float(sys.argv[3])
+#    algorithm_ep_gradual(file_name, min_sup)
 elif request == 12:
     # emerging fuzzy-temporal Patterns
     file_name = str(sys.argv[2])
@@ -968,10 +964,10 @@ elif request == 21:
     file_name = str(sys.argv[2])
     cols, data = DataTransform.test_dataset(file_name)
     if cols:
-        print("timeOK")
+        print("true")
     else:
-        print("null")
+        print("false")
     sys.stdout.flush()
 else:
-    print("Request not found!")
+    print("<h5>Request not found!</h5>")
     sys.stdout.flush()

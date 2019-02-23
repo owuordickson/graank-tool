@@ -40,23 +40,38 @@ uploadFile.addEventListener('click', (event) => {
 })
 
 runPattern.addEventListener('click', (event) => {
-  type = 2
+
   file = selectDirBtn.value
   ref_col = document.getElementById('input-ref').value
   min_sup = document.getElementById('input-sup').value
   min_rep = document.getElementById('input-rep').value
 
+  patternType = document.getElementById('pattern-type').innerHTML
+  if(patternType === 'Emerging Patterns'){
+    type = 12
+  }else{
+    type = 2
+  }
   showProgress()
-  runPythonCode(type, file, (ref_col-1), min_sup, min_rep)
+  req = ["./assets/python/border_tgraank.py", type, file, (ref_col-1), min_sup, min_rep]
+  //console.log(req)
+  runPythonCode(req)
 })
 
 runPattern1.addEventListener('click', (event) => {
-  type = 1
+
   file = selectDirBtn.value
   min_sup = document.getElementById('input-sup1').value
 
+  patternType = document.getElementById('pattern-type').innerHTML
+  if(patternType === 'Emerging Patterns'){
+    type = 11
+  }else{
+    type = 1
+  }
   showProgress()
-  //runPythonCode(type, file, min_sup)
+  req = ["./assets/python/graank.py", type, file, min_sup]
+  runPythonCode(req)
 })
 
 ipcRenderer.on('selected-directory', (event, path) => {
@@ -95,49 +110,28 @@ function showProgress(){
 
 function showSpecifications(file){
 
-  specsGradual = document.querySelector('.grid-specs-gradual-group.is-shown')
-  specsTemporal = document.querySelector('.grid-specs-temporal-group.is-shown')
-
   isCSV = checkFile(file)
   if (isCSV){
-    //validateTimeColumn(file)
-    validateTimeColumn(file, (result) => {
-      //msgLabel.innerHTML = `${result}`
-      //if (result == 'timeOK'){
-      if (result){
-        if(!specsTemporal){
-          specsTemporal = document.querySelector('.grid-specs-temporal-group')
-          specsTemporal.classList.add('is-shown')
-        }
-        if(specsGradual){
-          specsGradual.classList.remove('is-shown')
-        }
-      }else{
-        if(!specsGradual){
-          specsGradual = document.querySelector('.grid-specs-gradual-group')
-          specsGradual.classList.add('is-shown')
-        }
-        if(specsGradual){
-          specsTemporal.classList.remove('is-shown')
-        }
-      }
-    })
-
+    validateTimeColumn(file)
   }
   closeProgress()
 }
 
 function showGradualSpecifications(){
+  specsGradual = document.querySelector('.grid-specs-gradual-group.is-shown')
+  specsTemporal = document.querySelector('.grid-specs-temporal-group.is-shown')
   if(!specsGradual){
     specsGradual = document.querySelector('.grid-specs-gradual-group')
     specsGradual.classList.add('is-shown')
   }
-  if(specsGradual){
+  if(specsTemporal){
     specsTemporal.classList.remove('is-shown')
   }
 }
 
 function showTemporalSpecifications(){
+  specsGradual = document.querySelector('.grid-specs-gradual-group.is-shown')
+  specsTemporal = document.querySelector('.grid-specs-temporal-group.is-shown')
   if(!specsTemporal){
     specsTemporal = document.querySelector('.grid-specs-temporal-group')
     specsTemporal.classList.add('is-shown')
@@ -178,7 +172,7 @@ function closeSpecifications(){
     specsTemporal = document.querySelector('.grid-specs-temporal-group.is-shown')
 
     if(specsGradual){
-      specsTemporal.classList.remove('is-shown')
+      specsGradual.classList.remove('is-shown')
     }
     if(specsTemporal){
       specsTemporal.classList.remove('is-shown')
@@ -186,7 +180,7 @@ function closeSpecifications(){
 
   }
 
-function  checkFile(file){
+function checkFile(file){
     ext = mime.getType(file)
     if (ext === 'text/csv' || ext === 'application/csv'){
       msgLabel.innerHTML = '<p style="color: green;">csv file verified &#128077</p><h5>click "Get Patterns"</h5>'
@@ -199,28 +193,31 @@ function  checkFile(file){
     }
   }
 
-  function validateTimeColumn(csvFile, callback){
-    //progressBar.value = 30
-    //return true
+function validateTimeColumn(csvFile){
     type = 21
     let fileProcess = spawn('python',["./assets/python/border_tgraank.py", type, csvFile])
-    result = ''
+    //result = ''
     fileProcess.stdout.on('data', (data) => {
         // Do something with the data returned from python script
         //msgLabel.innerHTML = `${data}`
-        result += data.toString()
-    })
-    fileProcess.on('close', (code) => {
-      return callback(result)
+        result = data.toString()
+        console.log(result)
+        result = true
+
+        if (result){
+          showTemporalSpecifications()
+        }else{
+          showGradualSpecifications()
+        }
     })
   }
 
-function runPythonCode(type, file, ref_col, min_sup, min_rep){
-  let pythonProcess = spawn('python',["./assets/python/border_tgraank.py", type, file, ref_col, min_sup, min_rep])
-
+//function runPythonCode(type, file, ref_col, min_sup, min_rep){
+  //let pythonProcess = spawn('python',["./assets/python/border_tgraank.py", type, file, ref_col, min_sup, min_rep])
+function runPythonCode(request){
+  let pythonProcess = spawn('python', request)
   pythonProcess.stdout.on('data', (data) => {
       // Do something with the data returned from python script
-
       document.getElementById('text-result').innerHTML = `${data}`
       showResultContent()
       closeProgress()
