@@ -1,6 +1,7 @@
 const {ipcRenderer} = require('electron')
 const tooltip = require('electron-tooltip')
 const mime = require('mime')
+const csvJson = require('csvtojson')
 let spawn = require('child_process').spawn
 
 const selectPattern = document.querySelector('.dropdown-menu')
@@ -81,7 +82,7 @@ ipcRenderer.on('selected-directory', (event, path) => {
   closeSpecifications()
 })
 
-// --------------------- Functions ----------------------------------
+// --------------------- Views ----------------------------------
 
 
 function showResultContent(){
@@ -110,9 +111,23 @@ function showProgress(){
 
 function showSpecifications(file){
 
+  showProgress()
   isCSV = checkFile(file)
   if (isCSV){
     validateTimeColumn(file)
+    .then((isValid) => {
+      closeProgress()
+      if (isValid){
+        showTemporalSpecifications()
+      }else {
+        showGradualSpecifications()
+      }
+    })
+    .catch((err) => {
+      console.err(err)
+      msgLabel.innerHTML = '<p>sorry, an error occured</p>'
+      closeProgress()
+    })
   }
   closeProgress()
 }
@@ -193,27 +208,35 @@ function checkFile(file){
     }
   }
 
-function validateTimeColumn(csvFile){
-    type = 21
-    let fileProcess = spawn('python',["./assets/python/border_tgraank.py", type, csvFile])
-    //result = ''
-    fileProcess.stdout.on('data', (data) => {
-        // Do something with the data returned from python script
-        //msgLabel.innerHTML = `${data}`
-        result = data.toString()
-        console.log(result)
-        result = true
+// ----------------------- main tasks --------------------------------------------
 
-        if (result){
-          showTemporalSpecifications()
-        }else{
-          showGradualSpecifications()
+async function validateTimeColumn(csvFile){
+    const dateReg = /(0?[1-9]|[12]\d|30|31)[^\w\d\r\n:](0?[1-9]|1[0-2])[^\w\d\r\n:](\d{4}|\d{2})/
+    const time12Reg = /^(?:1[0-2]|0?[0-9]):[0-5][0-9]:[0-5][0-9]$/
+    const time24Reg = /^(?:2[0-3]|[01]?[0-9]):[0-5][0-9]:[0-5][0-9]$/
+    const jsonArray = await getJson(csvFile)
+
+    try {
+      for (key in jsonArray[0]){
+        if (jsonArray[0][key].match(dateReg) || jsonArray[0][key].match(time12Reg) || jsonArray[0][key].match(time24Reg)){
+          //console.log(jsonArray[0][key])
+          return true
         }
-    })
+      }
+      //throw new Error("")
+      return false
+    }catch (err){
+      console.error("Error: ", data.toString())
+      msgLabel.innerHTML = '<p>sorry, an error occured</p>'
+      closeProgress()
+    }
   }
 
-//function runPythonCode(type, file, ref_col, min_sup, min_rep){
-  //let pythonProcess = spawn('python',["./assets/python/border_tgraank.py", type, file, ref_col, min_sup, min_rep])
+function getJson(csvPath){
+  return csvJson({delimiter: [";",",",' ',"\t"]}).fromFile(csvPath)
+}
+
+
 function runPythonCode(request){
   let pythonProcess = spawn('python', request)
   pythonProcess.stdout.on('data', (data) => {
@@ -221,5 +244,13 @@ function runPythonCode(request){
       document.getElementById('text-result').innerHTML = `${data}`
       showResultContent()
       closeProgress()
+  })
+  pythonProcess.stderr.on('data', (data) => {
+    console.error("Error: ", data.toString())
+    msgLabel.innerHTML = '<p>sorry, an error occured</p>'
+    closeProgress()
+  })
+  pythonProcess.on('close', (code) => {
+    console.log("Child exited with code ", code)
   })
 }

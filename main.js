@@ -22,7 +22,10 @@ function initialize () {
       width: 1080,
       minWidth: 680,
       height: 840,
-      title: app.getName()
+      title: app.getName(),
+      webPreferences: {
+        nodeIntegration: true
+      }
     }
 
     if (process.platform === 'linux') {
@@ -30,6 +33,13 @@ function initialize () {
     }
 
     mainWindow = new BrowserWindow(windowOptions)
+
+    /*mainWindow = new BrowserWindow({
+      windowOptions,
+      webPreferences: {
+        nodeIntegration: true
+      }
+    })*/
     mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
 
     // Launch fullscreen with DevTools open, usage: npm run debug

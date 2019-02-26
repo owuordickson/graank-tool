@@ -280,7 +280,7 @@
   width: 100%;
   grid-template-columns: auto auto auto auto;
   grid-template-rows: auto auto;
-  display: inline-grid;
+  display: none;
   justify-content: center;
   margin: 0;
   padding: 0;
@@ -289,6 +289,7 @@
   animation: disappear 0.8s;
 }
 .grid-specs-gradual-group.is-shown {
+  display: inline-grid;
   visibility: visible;
   opacity: 1;
   animation: appear 0.8s;
@@ -298,7 +299,7 @@
   width: 100%;
   grid-template-columns: auto auto auto auto;
   grid-template-rows: auto auto;
-  display: inline-grid;
+  display: none;
   justify-content: center;
   margin: 0;
   padding: 0;
@@ -307,6 +308,7 @@
   animation: disappear 0.8s;
 }
 .grid-specs-temporal-group.is-shown {
+  display: inline-grid;
   visibility: visible;
   opacity: 1;
   animation: appear 0.8s;
