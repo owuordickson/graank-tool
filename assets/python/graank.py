@@ -8,11 +8,12 @@ Modified by Dickson Owuor Sat Feb 23 18:17:35 2019
 
 """
 import csv
-import bisect
 import numpy as np
-import time
 import gc
 import sys
+import ntpath
+
+from mbdll_border import *
 
 
 def Trad(fileName):
@@ -30,9 +31,11 @@ def Trad(fileName):
         if temp[0][1].replace('.','',1).isdigit() or temp[0][1].isdigit():
             return [[float(temp[j][i]) for j in range(len(temp))] for i in range(1,len(temp[0]))]
         else:
+            title = []
             for i in range(len(temp[0])):
-                print(str(i+1) + ' : ' + temp[0][i] + "<br>")
-            return [[float(temp[j][i]) for j in range(1,len(temp))] for i in range(len(temp[0]))]
+                sub = (str(i + 1) + ' : ' + temp[0][i])
+                title.append(sub)
+            return title, [[float(temp[j][i]) for j in range(1, len(temp))] for i in range(len(temp[0]))]
 
 
 def GraankInit(T,eq=False):
@@ -137,16 +140,18 @@ def APRIORIgen(R,a,n):
     return res
 
 
-def Graank(T,a,eq=False):
-    res=[]
-    res2=[]
-    temp=0
-    n=len(T[0])
-    G=GraankInit(T,eq)
+def Graank(D_in,a,eq=False):
+    title = D_in[0]
+    T = D_in[1]
+    res = []
+    res2 = []
+    temp = 0
+    n = len(T[0])
+    G = GraankInit(T,eq)
     #print G
     for i in G:
-        temp=float(np.sum(i[1]))/float(n*(n-1.0)/2.0)
-        if temp<a:
+        temp = float(np.sum(i[1]))/float(n*(n-1.0)/2.0)
+        if temp < a:
             G.remove(i)
 #        else:
 #            res.append(i[0])
@@ -171,7 +176,7 @@ def Graank(T,a,eq=False):
                 res.append(G[i][0])
                 res2.append(temp)
                 i+=1
-    return res,res2
+    return title, res, res2
 
 
 def fuse(L):
@@ -225,10 +230,33 @@ def getSupp(T,s,eq=False):
 #main('FluTopicData-testsansdate-blank.csv',0.5,False)
 #main('ndvi_file.csv',0.5,False)
 
+# --------------------- CODE FOR EMERGING PATTERNS -------------------------------------------
+
+
+def get_maximal_items(init_list):
+    # comb = list((zip(init_list, tlag_list)))
+    max_items = gen_set(tuple(init_list))
+    temp = list(max_items)
+
+    for item_i in max_items:
+        for item_j in max_items:
+            if set(item_i).issubset(set(item_j)) and set(item_i) != (set(item_j)):
+                try:
+                    if item_i in temp:
+                        temp.remove(item_i)
+                except:
+                    continue
+    return temp
+
+
+# ------------------------- EXECUTE GRAANK and BORDER-GRAANK --------------------------------
+
 
 def algorithm_gradual(file_name, min_sup):
-    D1, S1=Graank(Trad(file_name), min_sup, False)
+    title, D1, S1=Graank(Trad(file_name), min_sup, False)
     #print(str(D1))
+    for line in title:
+        print(line)
     print('<h5>Pattern : Support</h5>')
     if D1:
         for i in range(len(D1)):
@@ -240,7 +268,42 @@ def algorithm_gradual(file_name, min_sup):
         sys.stdout.flush()
 
 
+def algorithm_ep_gradual(file_path_1, file_path_2, min_sup):
+    try:
+
+        # 1. get Gradual patterns for dataset 1 and 2
+        title_1, gp_list_1, S1 = Graank(Trad(file_path_1), min_sup, False)
+        title_2, gp_list_2, S2 = Graank(Trad(file_path_2), min_sup, False)
+
+        # 2. check if data-sets have matching columns
+        if title_1 == title_2:
+            if gp_list_1 and gp_list_2:
+                # 3. get maximal item-sets
+                freq_pattern_1 = get_maximal_items(gp_list_1)
+                freq_pattern_2 = get_maximal_items(gp_list_2)
+
+                # 4. get emerging gradual patterns
+                ep = mbdll_border(tuple(freq_pattern_1), tuple(freq_pattern_2))
+                if not ep:
+                    print("<h5>Oops! no relevant emerging pattern was found</h5>")
+                else:
+                    file_1 = ntpath.basename(file_path_1)
+                    file_2 = ntpath.basename(file_path_2)
+                    print("<h5>" + str(file_2) + " opposing " + str(file_1) + "</h5>")
+                    for line in title_1:
+                        print(line)
+                    print(str(ep))
+            else:
+                print("<h5>Oops! no frequent patterns were found</h5>")
+        else:
+            print("<h5>colums of files do not match</h5>")
+        sys.stdout.flush()
+    except Exception as error:
+        print(error)
+        sys.stdout.flush()
+
 # ------------------------- main method ----------------------------------------------------
+
 
 request = int(sys.argv[1])
 
@@ -251,11 +314,10 @@ if request == 1:
     algorithm_gradual(file_name, min_sup)
 elif request == 11:
     # emerging gradual Patterns
-    file_name = str(sys.argv[2])
-    min_sup = float(sys.argv[3])
-    #algorithm_ep_gradual(file_name, min_sup)
-    print("<h5>Feature under development</h5>")
-    sys.stdout.flush()
+    file_name1 = str(sys.argv[2])
+    file_name2 = str(sys.argv[3])
+    min_sup = float(sys.argv[4])
+    algorithm_ep_gradual(file_name1, file_name2, min_sup)
 else:
     print("<h5>Request not found!</h5>")
     sys.stdout.flush()
