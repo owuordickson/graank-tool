@@ -198,7 +198,7 @@ function closeSpecifications(){
 function checkFile(file){
     ext = mime.getType(file)
     if (ext === 'text/csv' || ext === 'application/csv'){
-      msgLabel.innerHTML = '<p style="color: green;">csv file verified &#128077</p><h5>click "Get Patterns"</h5>'
+      msgLabel.innerHTML = '<p style="color: green;">csv file verified &#128077</p>'
       closeProgress()
       return true
     }else{
