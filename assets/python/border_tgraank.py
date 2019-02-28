@@ -373,22 +373,20 @@ def round_time(seconds):
 
 def mbdll_border(dataset_1, dataset_2):
     ep_list = list()
-
-    if set(dataset_1).isdisjoint(set(dataset_2)):
-
-        count_d2 = get_border_length(dataset_2)
-        if count_d2 <= 1:
-            temp_list = get_ep_border(dataset_2, dataset_1)
+    #if set(dataset_1).isdisjoint(set(dataset_2)):
+    count_d2 = get_border_length(dataset_2)
+    if count_d2 <= 1:
+        temp_list = get_ep_border(dataset_2, dataset_1)
+        if temp_list:
+            ep_list.append(temp_list)
+    else:
+        for d2_item in dataset_2:  # starts at 1 - only the maximal items
+            temp_list = get_ep_border(d2_item, dataset_1)
             if temp_list:
                 ep_list.append(temp_list)
-        else:
-            for d2_item in dataset_2:  # starts at 1 - only the maximal items
-                temp_list = get_ep_border(d2_item, dataset_1)
-                if temp_list:
-                    ep_list.append(temp_list)
-        return ep_list
-    else:
-        return ep_list
+    return ep_list
+    #else:
+    #    return ep_list
 
 
 def get_intersections(item_1, init_list):

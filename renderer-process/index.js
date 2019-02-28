@@ -12,6 +12,10 @@ const runPattern1 = document.getElementById('run-algorithm1')
 
 const msgLabel = document.getElementById('show-message')
 
+let gradualEP = false
+let file1 = ''
+let file2 = ''
+
 tooltip({
     //
 })
@@ -21,10 +25,12 @@ tooltip({
 selectPattern.addEventListener('click', (event) => {
   if(event.target.dataset.value){
     document.getElementById('pattern-type').innerHTML = `${event.target.dataset.value} Patterns`
-
-    closeResultContent()
-    closeProgress()
-    closeSpecifications()
+    if (!gradualEP){
+      msgLabel.innerHTML = ''
+      closeResultContent()
+      closeProgress()
+      closeSpecifications()
+    }
   }
 })
 
@@ -35,13 +41,21 @@ selectDirBtn.addEventListener('click', (event) => {
 uploadFile.addEventListener('click', (event) => {
   csvFile = selectDirBtn.value
   msgLabel.innerHTML = ''
-  showProgress()
-  closeResultContent()
-  showSpecifications(csvFile)
+  if (gradualEP){
+    showProgress()
+    isCSV = checkFile(csvFile)
+    if (isCSV){
+      file2 = csvFile
+    }else {
+      file2 = ''
+    }
+  }else{
+    closeResultContent()
+    showSpecifications(csvFile)
+  }
 })
 
 runPattern.addEventListener('click', (event) => {
-
   file = selectDirBtn.value
   ref_col = document.getElementById('input-ref').value
   min_sup = document.getElementById('input-sup').value
@@ -67,19 +81,55 @@ runPattern1.addEventListener('click', (event) => {
   patternType = document.getElementById('pattern-type').innerHTML
   if(patternType === 'Emerging Patterns'){
     type = 11
+    if (file1 != ''){
+      if (file2 != '' && file1 != file2){
+        showProgress()
+        validateTimeColumn(file2)
+        .then((hasTime) => {
+          if (hasTime){
+            file2 = ''
+            msg = 'columns in csv file not matching previous file...<br>upload another file'
+            requestFile(msg)
+          }else {
+            req = ["./assets/python/graank.py", type, file1, file2, min_sup]
+            runPythonCode(req)
+            file1 = ''
+            file2 = ''
+            gradualEP = false
+          }
+        })
+        .catch((err) => {
+          file2 = ''
+          msg = 'sorry system error...upload another file'
+          requestFile(msg)
+        })
+      }else {
+        file2 = ''
+        msg = 'file is blank or may be similar to previous file...<br>upload another file'
+        requestFile(msg)
+      }
+    }else{
+      file1 = file
+      file2 = ''
+      msg = 'Please upload 2nd file'
+      requestFile(msg)
+      gradualEP = true
+    }
   }else{
     type = 1
+    showProgress()
+    req = ["./assets/python/graank.py", type, file, min_sup]
+    runPythonCode(req)
   }
-  showProgress()
-  req = ["./assets/python/graank.py", type, file, min_sup]
-  runPythonCode(req)
 })
 
 ipcRenderer.on('selected-directory', (event, path) => {
   selectDirBtn.value = `${path}`
-  closeResultContent()
-  closeProgress()
-  closeSpecifications()
+  if (!gradualEP){
+    closeResultContent()
+    closeProgress()
+    closeSpecifications()
+  }
 })
 
 // --------------------- Views ----------------------------------
@@ -110,7 +160,6 @@ function showProgress(){
 }
 
 function showSpecifications(file){
-
   showProgress()
   isCSV = checkFile(file)
   if (isCSV){
@@ -208,7 +257,15 @@ function checkFile(file){
     }
   }
 
-// ----------------------- main tasks --------------------------------------------
+// ----------------------- upload another file ---------------------------------
+
+function requestFile(msg){
+  msgLabel.innerHTML = '<p>' + msg + '</p>'
+  selectDirBtn.value = ''
+  closeProgress()
+}
+
+// ----------------------- main tasks ------------------------------------------
 
 async function validateTimeColumn(csvFile){
     const dateReg = /(0?[1-9]|[12]\d|30|31)[^\w\d\r\n:](0?[1-9]|1[0-2])[^\w\d\r\n:](\d{4}|\d{2})/
