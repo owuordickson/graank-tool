@@ -25,12 +25,13 @@ tooltip({
 selectPattern.addEventListener('click', (event) => {
   if(event.target.dataset.value){
     document.getElementById('pattern-type').innerHTML = `${event.target.dataset.value} Patterns`
-    if (!gradualEP){
-      msgLabel.innerHTML = ''
-      closeResultContent()
-      closeProgress()
-      closeSpecifications()
-    }
+    //if (!gradualEP){
+    gradualEP = false
+    msgLabel.innerHTML = ''
+    closeResultContent()
+    closeProgress()
+    closeSpecifications()
+    //}
   }
 })
 
@@ -126,6 +127,7 @@ runPattern1.addEventListener('click', (event) => {
 ipcRenderer.on('selected-directory', (event, path) => {
   selectDirBtn.value = `${path}`
   if (!gradualEP){
+    msgLabel.innerHTML = ''
     closeResultContent()
     closeProgress()
     closeSpecifications()
