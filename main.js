@@ -8,7 +8,11 @@ const {app, BrowserWindow} = require('electron')
 
 const debug = /--debug/.test(process.argv[2])
 
+<<<<<<< HEAD
 if (process.mas) app.setName('Electron APIs')
+=======
+if (process.mas) app.setName('Graank')
+>>>>>>> added code for packaging
 
 let mainWindow = null
 
