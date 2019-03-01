@@ -1,5 +1,5 @@
 {
-  "name": "graank-ui",
+  "name": "graank-tool",
   "version": "1.0.0",
   "description": "a software for mining gradual patterns",
   "main": "main.js",
