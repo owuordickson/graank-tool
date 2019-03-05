@@ -1,3 +1,4 @@
+const path = require('path')
 const {ipcRenderer} = require('electron')
 const tooltip = require('electron-tooltip')
 const mime = require('mime')
@@ -69,7 +70,8 @@ runPattern.addEventListener('click', (event) => {
     type = 2
   }
   showProgress()
-  req = ["./assets/python/border_tgraank.py", type, file, (ref_col-1), min_sup, min_rep]
+  python_path = path.join(__dirname, '../assets/python/border_tgraank.py')
+  req = [python_path, type, file, (ref_col-1), min_sup, min_rep]
   //console.log(req)
   runPythonCode(req)
 })
@@ -92,7 +94,8 @@ runPattern1.addEventListener('click', (event) => {
             msg = 'columns in csv file not matching previous file...<br>upload another file'
             requestFile(msg)
           }else {
-            req = ["./assets/python/graank.py", type, file1, file2, min_sup]
+            python_path = path.join(__dirname, '../assets/python/graank.py')
+            req = [python_path, type, file1, file2, min_sup]
             runPythonCode(req)
             file1 = ''
             file2 = ''
@@ -119,7 +122,8 @@ runPattern1.addEventListener('click', (event) => {
   }else{
     type = 1
     showProgress()
-    req = ["./assets/python/graank.py", type, file, min_sup]
+    python_path = path.join(__dirname, '../assets/python/graank.py')
+    req = [python_path, type, file, min_sup]
     runPythonCode(req)
   }
 })
@@ -306,7 +310,7 @@ function runPythonCode(request){
   })
   pythonProcess.stderr.on('data', (data) => {
     console.error("Error: ", data.toString())
-    msgLabel.innerHTML = '<p>sorry, an error occured</p>'
+    msgLabel.innerHTML = '<p>sorry, an error occured</p><br>'+data.toString()
     closeProgress()
   })
   pythonProcess.on('close', (code) => {
