@@ -3,7 +3,6 @@ const {ipcRenderer} = require('electron')
 const tooltip = require('electron-tooltip')
 const mime = require('mime')
 const csvJson = require('csvtojson')
-let spawn = require('child_process').spawn
 
 const selectPattern = document.querySelector('.dropdown-menu')
 const selectDirBtn = document.getElementById('select-directory')
@@ -70,10 +69,11 @@ runPattern.addEventListener('click', (event) => {
     type = 2
   }
   showProgress()
-  python_path = path.join(__dirname, '../assets/python/border_tgraank.py')
-  req = [python_path, type, file, (ref_col-1), min_sup, min_rep]
+  python_path = path.join(__dirname, '../python_modules/src/border_tgraank.py')
+  python_file = 'border_tgraank.py'
+  req = [type, file, (ref_col-1), min_sup, min_rep]
   //console.log(req)
-  runPythonCode(req)
+  runPythonCode(python_file, req)
 })
 
 runPattern1.addEventListener('click', (event) => {
@@ -94,9 +94,10 @@ runPattern1.addEventListener('click', (event) => {
             msg = 'columns in csv file not matching previous file...<br>upload another file'
             requestFile(msg)
           }else {
-            python_path = path.join(__dirname, '../assets/python/graank.py')
-            req = [python_path, type, file1, file2, min_sup]
-            runPythonCode(req)
+            python_path = path.join(__dirname, '../python_modules/src/graank.py')
+            python_file = 'graank.py'
+            req = [type, file1, file2, min_sup]
+            runPythonCode(python_file, req)
             file1 = ''
             file2 = ''
             gradualEP = false
@@ -122,9 +123,10 @@ runPattern1.addEventListener('click', (event) => {
   }else{
     type = 1
     showProgress()
-    python_path = path.join(__dirname, '../assets/python/graank.py')
-    req = [python_path, type, file, min_sup]
-    runPythonCode(req)
+    python_path = path.join(__dirname, '../python_modules/src/graank.py')
+    python_file = 'graank.py'
+    req = [type, file, min_sup]
+    runPythonCode(python_file, req)
   }
 })
 
@@ -300,7 +302,41 @@ function getJson(csvPath){
 }
 
 
-function runPythonCode(request){
+function runPythonCode(py_file, req){
+  let pyShell = require('python-shell')
+
+  let options = {
+    mode: 'text',
+    //pythonPath: path.join(__dirname,'.'),
+    pythonOptions: ['-u'], // get print results in real-time
+    scriptPath: path.join(__dirname,'../python_modules/src'),
+    args: req
+  }
+
+  //req[0] = 'border_tgraank.py'
+  pyShell.PythonShell.run(py_file, options, function(err, data){
+    if (err) {
+      console.error("Error: ", data.toString())
+      msgLabel.innerHTML = '<p>sorry, an error occured</p><br>'+data.toString()
+      closeProgress()
+      throw err
+    }
+
+    out_str = ""
+    data.forEach(function(line){
+      out_str += line
+    })
+
+    // data is an array consisting of messages collected during execution
+    document.getElementById('text-result').innerHTML = `${out_str}`
+    showResultContent()
+    closeProgress()
+    console.log('results: %j', data)
+  })
+}
+
+/*function runPythonCode_old(request){
+  let spawn = require('child_process').spawn
   let pythonProcess = spawn('python', request)
   pythonProcess.stdout.on('data', (data) => {
       // Do something with the data returned from python script
@@ -316,4 +352,4 @@ function runPythonCode(request){
   pythonProcess.on('close', (code) => {
     console.log("Child exited with code ", code)
   })
-}
+}*/

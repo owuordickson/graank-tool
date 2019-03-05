@@ -15,6 +15,9 @@
     "installer:deb64": "electron-installer-debian --overwrite --src dist-builds/graank-tool-linux-x64/ --dest dist/installers/ --arch amd64",
     "installer:win32": "electron-installer-windows --overwrite --src dist-builds/graank-tool-win32-ia32/ --dest dist/installers/",
     "installer:dmg": "electron-installer-dmg --overwrite dist-builds/graank-tool-darwin-x64/graank-tool.app dist/installers/graank-tool",
+    "nopenv": "nopenv",
+    "nopy": "nopy",
+    "npip": "npip",
     "prepack": "check-for-leaks",
     "prepush": "check-for-leaks"
   },
@@ -50,8 +53,20 @@
     "jquery": "^3.3.1",
     "mime": "^2.4.0",
     "mmmagic": "^0.5.2",
+    "nopy": "^0.2.6",
     "popper.js": "^1.14.4",
     "python-shell": "^1.0.7",
     "update-electron-app": "^1.1.1"
+  },
+  "python": {
+    "execPath": "python3",
+    "path": [
+      ".",
+      "src"
+    ],
+    "dependencies": {
+      "numpy": ">=1.16.2",
+      "scikit-fuzzy": ">=0.4.0"
+    }
   }
 }
