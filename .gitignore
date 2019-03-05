@@ -62,4 +62,4 @@ typings/
 
 # distributions
 dist/
-release-builds/
+dist-builds/
