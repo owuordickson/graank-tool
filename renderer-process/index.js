@@ -307,7 +307,7 @@ function runPythonCode(py_file, req){
 
   let options = {
     mode: 'text',
-    //pythonPath: path.join(__dirname,'.'),
+    //pythonPath: path.join(__dirname,'../python_modules/bin/python'),
     pythonOptions: ['-u'], // get print results in real-time
     scriptPath: path.join(__dirname,'../python_modules/src'),
     args: req
@@ -316,8 +316,8 @@ function runPythonCode(py_file, req){
   //req[0] = 'border_tgraank.py'
   pyShell.PythonShell.run(py_file, options, function(err, data){
     if (err) {
-      console.error("Error: ", data.toString())
-      msgLabel.innerHTML = '<p>sorry, an error occured</p><br>'+data.toString()
+      console.error("Error: ", err)
+      msgLabel.innerHTML = '<p>sorry, an error occured</p><br>'+err
       closeProgress()
       throw err
     }
