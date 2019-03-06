@@ -71,9 +71,9 @@ runPattern.addEventListener('click', (event) => {
   showProgress()
   python_path = path.join(__dirname, '../python_modules/src/border_tgraank.py')
   python_file = 'border_tgraank.py'
-  req = [type, file, (ref_col-1), min_sup, min_rep]
+  req = [python_path, type, file, (ref_col-1), min_sup, min_rep]
   //console.log(req)
-  runPythonCode(python_file, req)
+  runPythonCode(req)
 })
 
 runPattern1.addEventListener('click', (event) => {
@@ -96,8 +96,8 @@ runPattern1.addEventListener('click', (event) => {
           }else {
             python_path = path.join(__dirname, '../python_modules/src/graank.py')
             python_file = 'graank.py'
-            req = [type, file1, file2, min_sup]
-            runPythonCode(python_file, req)
+            req = [python_path, type, file1, file2, min_sup]
+            runPythonCode(req)
             file1 = ''
             file2 = ''
             gradualEP = false
@@ -125,8 +125,8 @@ runPattern1.addEventListener('click', (event) => {
     showProgress()
     python_path = path.join(__dirname, '../python_modules/src/graank.py')
     python_file = 'graank.py'
-    req = [type, file, min_sup]
-    runPythonCode(python_file, req)
+    req = [python_path, type, file, min_sup]
+    runPythonCode(req)
   }
 })
 
@@ -302,7 +302,7 @@ function getJson(csvPath){
 }
 
 
-function runPythonCode(py_file, req){
+/*function runPythonCode(py_file, req){
   let pyShell = require('python-shell')
 
   let options = {
@@ -333,9 +333,9 @@ function runPythonCode(py_file, req){
     closeProgress()
     console.log('results: %j', data)
   })
-}
+}*/
 
-/*function runPythonCode_old(request){
+function runPythonCode(request){
   let spawn = require('child_process').spawn
   let pythonProcess = spawn('python', request)
   pythonProcess.stdout.on('data', (data) => {
@@ -352,4 +352,4 @@ function runPythonCode(py_file, req){
   pythonProcess.on('close', (code) => {
     console.log("Child exited with code ", code)
   })
-}*/
+}
