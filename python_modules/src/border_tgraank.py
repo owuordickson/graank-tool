@@ -321,7 +321,7 @@ def calculate_support(memberships):
         sup_count = 0
         total = len(memberships)
         for member in memberships:
-            if float(member) > 0.5:
+            if float(member) > 0:
                 sup_count = sup_count + 1
         support = sup_count / total
     return support
