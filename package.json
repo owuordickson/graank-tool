@@ -7,14 +7,6 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --debug",
-    "package": "npm-run-all package:*",
-    "installer": "npm-run-all installer:*",
-    "package:mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --out=dist-builds --icon=assets/app-icon/mac/app.icns --prune=true",
-    "package:win": "electron-packager . --overwrite --platform=win32 --arch=ia32 --out=dist-builds --icon=assets/app-icon/win/app.ico",
-    "package:linux": "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=dist-builds",
-    "installer:deb64": "electron-installer-debian --overwrite --src dist-builds/graank-tool-linux-x64/ --dest dist/installers/ --arch amd64",
-    "installer:win32": "electron-installer-windows --overwrite --src dist-builds/graank-tool-win32-ia32/ --dest dist/installers/",
-    "installer:dmg": "electron-installer-dmg --overwrite dist-builds/graank-tool-darwin-x64/graank-tool.app dist/installers/graank-tool"
   },
   "repository": "https://github.com/owuordickson/graank-tool",
   "keywords": [
@@ -30,11 +22,6 @@
   "devDependencies": {
     "devtron": "^1.3.0",
     "electron": "^4.0.6",
-    "electron-installer-debian": "^1.1.1",
-    "electron-installer-dmg": "^2.0.0",
-    "electron-installer-windows": "^1.1.1",
-    "electron-packager": "^13.1.0",
-    "npm-run-all": "^4.0.2"
   },
   "dependencies": {
     "bootstrap": "^4.1.3",
