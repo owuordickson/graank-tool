@@ -30,7 +30,7 @@
     "electron-settings": "^3.0.7",
     "electron-tooltip": "^1.1.5",
     "glob": "^7.1.0",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.0",
     "mime": "^2.4.0",
     "popper.js": "^1.14.4",
     "update-electron-app": "^1.1.1"
